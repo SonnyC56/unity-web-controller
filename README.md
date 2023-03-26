@@ -1,4 +1,4 @@
-# Getting Started with Create React App
+# Web Client to Control Unity App over Websocket
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
