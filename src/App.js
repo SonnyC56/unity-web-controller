@@ -3,8 +3,11 @@ import './App.css';
 import useWebSocket from 'react-use-websocket';
 import { Joystick } from 'react-joystick-component';
 
+import { v4 as uuidv4 } from 'uuid';
 
 const WS_URL = 'ws://localhost:8080';
+
+const userUUID = uuidv4()
 
 function App() {
 
@@ -16,6 +19,7 @@ function App() {
   const { sendJsonMessage } = useWebSocket(WS_URL, {
     onOpen: () => {
       console.log('WebSocket connection established.');
+      sendJsonMessage({uuid: userUUID});
     },
     onMessage: (event) => {},
     onError: (event) => {},
@@ -23,6 +27,7 @@ function App() {
 
 
   const handleMove = (data) => {
+    data.uuid = userUUID
     sendJsonMessage(data);
   }
 
