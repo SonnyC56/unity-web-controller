@@ -10,7 +10,7 @@ function App() {
   const { sendJsonMessage } = useWebSocket(WS_URL, {
     onMessage: (event) => {
       const data = JSON.parse(event.data);
-
+      console.log('recieving data ' , data)
       if (data.type === "control") {
         // This client has been granted control of the camera
         setHasControl(true);
