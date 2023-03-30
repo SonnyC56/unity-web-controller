@@ -1,48 +1,48 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from 'react';
 import useWebSocket from 'react-use-websocket';
 import { Joystick } from 'react-joystick-component';
 
-import { v4 as uuidv4 } from 'uuid';
-
 const WS_URL = 'ws://localhost:8080';
 
-const userUUID = uuidv4()
-
 function App() {
-
-  const sendMessage = (message) => {
-    const payload = { message: message };
-    sendJsonMessage(payload);
-  };
+  const [hasControl, setHasControl] = useState(false);
 
   const { sendJsonMessage } = useWebSocket(WS_URL, {
-    onOpen: () => {
-      console.log('WebSocket connection established.');
-      sendJsonMessage({uuid: userUUID});
+    onMessage: (event) => {
+      const data = JSON.parse(event.data);
+
+      if (data.type === "control") {
+        // This client has been granted control of the camera
+        setHasControl(true);
+      }
     },
-    onMessage: (event) => {},
-    onError: (event) => {},
   });
 
-
   const handleMove = (data) => {
-    data.uuid = userUUID
-    sendJsonMessage(data);
-  }
+    if (hasControl) {
+      sendJsonMessage(data);
+    }
+  };
 
+  const handleDone = () => {
+    if (hasControl) {
+      setHasControl(false);
+      sendJsonMessage({ type: "done" });
+    }
+  };
 
   return (
     <div className="App">
       <header className="App-header">
-       <h1> Unity Web Controller</h1>
-        <Joystick size={100} baseColor="red" stickColor="blue" move={handleMove}  ></Joystick>
-        <div className="arrow-buttons">
-          <button onClick={() => sendMessage('Jump')}>Jump</button>
-        </div>
-        <p>
-          Tap the buttons to move the unity camera
-        </p>
+        <h1>Unity Web Controller</h1>
+        {hasControl ? (
+          <>
+            <Joystick size={100} baseColor="red" stickColor="blue" move={handleMove} />
+            <button onClick={handleDone}>Done</button>
+          </>
+        ) : (
+          <p>Waiting for control...</p>
+        )}
       </header>
     </div>
   );
