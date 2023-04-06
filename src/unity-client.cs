@@ -42,10 +42,8 @@ public class WebsocketClient : MonoBehaviour
 
         ws.OnMessage += (sender, e) =>
         {
-           // Debug.Log("Message Received from " + ((WebSocket)sender).Url + ", Data : " + e.Data);
             MoveData moveData = JsonUtility.FromJson<MoveData>(e.Data);
-         //   Debug.Log("Message Received from " + ((WebSocket)sender).Url + ", Data : " + moveData.type);
-
+     
          //   Debug.Log("Message Received from " + ((WebSocket)sender).Url + ", Data : " + JsonUtility.ToJson(moveData).type); 
             // If the message type is "move"
             if (moveData.type == "move")
@@ -64,23 +62,21 @@ public class WebsocketClient : MonoBehaviour
     private void Update()
     {
 
-           // Use x and y to rotate the camera
-          float horizontalRotation = x * distance * Time.deltaTime;
-          float verticalRotation = y * distance * Time.deltaTime;
-         //   transform.Rotate(-verticalRotation, horizontalRotation, 0f);
-
-        Debug.Log(starterAssetsInputs.move.x);
+           //  Use x and y to rotate the camera
+           //  float horizontalRotation = x * distance * Time.deltaTime;
+           //  float verticalRotation = y * distance * Time.deltaTime;
+           //  transform.Rotate(-verticalRotation, horizontalRotation, 0f);
 
        if(direction == "FORWARD"){
         starterAssetsInputs.move.y = 1;
        }
-                 if(direction == "BACKWARDS"){
+       if(direction == "BACKWARD"){
         starterAssetsInputs.move.y = -1;
        }
-              if(direction == "LEFT"){
+       if(direction == "LEFT"){
         starterAssetsInputs.move.x = -1;
        }
-              if(direction == "RIGHT"){
+        if(direction == "RIGHT"){
         starterAssetsInputs.move.x = 1;
        }
         if (ws == null)
