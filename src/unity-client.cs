@@ -2,6 +2,7 @@ using UnityEngine;
 using WebSocketSharp;
 using UnityEngine.InputSystem;
 using StarterAssets;
+
 public class WebsocketClient : MonoBehaviour
 {
     WebSocket ws;
@@ -12,6 +13,13 @@ public class WebsocketClient : MonoBehaviour
 
     StarterAssetsInputs starterAssetsInputs;
 
+    float smoothTime = 0.1f; // time for smoothing movement
+    Vector2 currentVelocity; // current velocity for smoothing movement
+    Vector2 targetDirection; // target direction for smoothing movement
+
+    float acceleration = 0.1f; // acceleration for smoother movement
+    Vector2 currentSpeed; // current speed for smoother movement
+    Vector2 targetSpeed; // target speed for smoother movement
 
     public class MoveData
     {
@@ -44,7 +52,6 @@ public class WebsocketClient : MonoBehaviour
         {
             MoveData moveData = JsonUtility.FromJson<MoveData>(e.Data);
      
-         //   Debug.Log("Message Received from " + ((WebSocket)sender).Url + ", Data : " + JsonUtility.ToJson(moveData).type); 
             // If the message type is "move"
             if (moveData.type == "move")
             {
@@ -59,32 +66,35 @@ public class WebsocketClient : MonoBehaviour
         };
     }
 
+    private void FixedUpdate()
+    {
+        // Use x and y to set the target direction for the movement
+        targetDirection = new Vector2(x, y).normalized;
+
+        // Apply acceleration to the target speed
+        targetSpeed = targetDirection * distance * acceleration;
+
+        // Smooth the movement over time
+        currentSpeed = Vector2.SmoothDamp(currentSpeed, targetSpeed, ref currentVelocity, smoothTime);
+
+        // Set the movement values in the StarterAssetsInputs component
+        starterAssetsInputs.move = new Vector2(currentSpeed.x, currentSpeed.y);
+
+        // Reset the movement values
+        x = 0;
+        y = 0;
+    }
+
     private void Update()
     {
+        // Use the direction to set the target rotation for the camera
+        Quaternion targetRotation = Quaternion.identity;
 
-           //  Use x and y to rotate the camera
-           //  float horizontalRotation = x * distance * Time.deltaTime;
-           //  float verticalRotation = y * distance * Time.deltaTime;
-           //  transform.Rotate(-verticalRotation, horizontalRotation, 0f);
-
-       if(direction == "FORWARD"){
-        starterAssetsInputs.move.y = 1;
-       }
-       if(direction == "BACKWARD"){
-        starterAssetsInputs.move.y = -1;
-       }
-       if(direction == "LEFT"){
-        starterAssetsInputs.move.x = -1;
-       }
-        if(direction == "RIGHT"){
-        starterAssetsInputs.move.x = 1;
-       }
-        if (ws == null)
-        {
-              
-            return;
+        if(direction == "FORWARD"){
+            targetRotation = Quaternion.Euler(0, 0, 0);
         }
-
-   
+        else if(direction == "BACKWARD"){
+            targetRotation = Quaternion.Euler(0, 180, 0);
+        }
     }
 }
