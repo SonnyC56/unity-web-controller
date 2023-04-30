@@ -3,6 +3,7 @@ using WebSocketSharp;
 using UnityEngine.InputSystem;
 using StarterAssets;
 
+
 public class WebsocketClient : MonoBehaviour
 {
     WebSocket ws;
@@ -12,7 +13,7 @@ public class WebsocketClient : MonoBehaviour
     float distance;
 
     StarterAssetsInputs starterAssetsInputs;
-
+    QRCodeGenerator qrCodeGenerator; 
     float smoothTime = 0.1f; // time for smoothing movement
     Vector2 currentVelocity; // current velocity for smoothing movement
     Vector2 targetDirection; // target direction for smoothing movement
@@ -32,15 +33,22 @@ public class WebsocketClient : MonoBehaviour
 
     private void Start()
     {
-        ws = new WebSocket("ws://localhost:8080");
+        ws = new WebSocket("ws://localhost:8090");
         ws.Connect();
 
         starterAssetsInputs = GetComponent<StarterAssetsInputs>();
-
+                // Create an instance of QRCodeGenerator
+         qrCodeGenerator = GetComponent<QRCodeGenerator>();
+  
         if (ws.ReadyState == WebSocketState.Open)
         {
             Debug.Log("WebSocket connection established!");
             ws.Send("{\"type\":\"unity\"}");
+            if (qrCodeGenerator != null) {
+               qrCodeGenerator.EncodeQRCode("https://localhost:3000");
+            } else {
+               Debug.LogError("QR code generator is null!");
+            }
         }
         else
         {
@@ -83,6 +91,8 @@ public class WebsocketClient : MonoBehaviour
         // Reset the movement values
         x = 0;
         y = 0;
+
+
     }
 
     private void Update()

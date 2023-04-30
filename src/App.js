@@ -2,7 +2,7 @@ import { useState } from 'react';
 import useWebSocket from 'react-use-websocket';
 import { Joystick } from 'react-joystick-component';
 
-const WS_URL = 'ws://localhost:8080';
+const WS_URL = 'ws://localhost:8090';
 
 function App() {
   const [hasControl, setHasControl] = useState(false);
