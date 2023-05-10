@@ -42,6 +42,10 @@ public class QRCodeGenerator : MonoBehaviour
 
     private void EncodeTextToQRCode(string textForEncoding)
     {
+           if (_storedEncodedTexture == null) 
+    {
+      Start();
+    }
      /*    string textToEncode = string.IsNullOrEmpty(_textInputField.text) ? "Default Text" : _textInputField.text; */
         Color32[] convertedPixels = Encode(textForEncoding, _storedEncodedTexture.width, _storedEncodedTexture.height);
         _storedEncodedTexture.SetPixels32(convertedPixels);

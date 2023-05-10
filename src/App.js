@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import useWebSocket from 'react-use-websocket';
 import { Joystick } from 'react-joystick-component';
-
+ import './App.css'
 const WS_URL = 'ws://localhost:8090';
 
 function App() {
@@ -21,6 +21,7 @@ function App() {
          didMount.current = true;
       }
     },
+
     onMessage: (event) => {
       const data = JSON.parse(event.data);
       console.log('recieving data ' , data)
@@ -45,7 +46,12 @@ function App() {
       sendJsonMessage(data);
     }
   };
-
+  const handleRotate = (data) => {
+    if (hasControl) {
+     data.type = "rotate"
+      sendJsonMessage(data);
+    }
+  };
   const handleDone = () => {
     if (hasControl) {
       setHasControl(false);
@@ -58,10 +64,19 @@ function App() {
       <header className="App-header">
         <h1>Unity Web Controller</h1>
         {hasControl ? (
-          <>
-            <Joystick size={100} baseColor="red" stickColor="blue" move={handleMove} />
-            <button onClick={handleDone}>Done</button>
-          </>
+            <div className="MainContainer">
+          <div className="Joystick">
+            <div>
+            <p>Move</p>
+            <Joystick size={100} baseColor="red" stickColor="blue" move={handleMove}  />
+            </div>
+            <div>
+            <p>Look</p>
+            <Joystick size={100} baseColor="green" stickColor="orange" move={handleRotate} />
+            </div>
+          </div>
+               <button  className="Done" onClick={handleDone}>Done</button>
+               </div>
         ) : (
           <p>
             {queuePosition > 0 ? (
@@ -73,6 +88,7 @@ function App() {
         )}
       </header>
     </div>
+
   );
 }
 

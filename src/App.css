@@ -27,7 +27,22 @@
 .App-link {
   color: #61dafb;
 }
-
+.MainContainer {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+.Joystick {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  width: 300px;
+}
+.Done {
+  margin-top: 10px;
+}
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

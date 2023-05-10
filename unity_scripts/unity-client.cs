@@ -12,6 +12,10 @@ public class WebsocketClient : MonoBehaviour
     string direction;
     float distance;
 
+         float xRotate;
+         float yRotate;  
+         int distanceRotate;
+
     StarterAssetsInputs starterAssetsInputs;
     QRCodeGenerator qrCodeGenerator; 
     float smoothTime = 0.1f; // time for smoothing movement
@@ -29,6 +33,10 @@ public class WebsocketClient : MonoBehaviour
         public float y;
         public string direction;
         public int distance;
+
+        public float xRotate;
+        public float yRotate;  
+        public int distanceRotate;
     }
 
     private void Start()
@@ -37,7 +45,7 @@ public class WebsocketClient : MonoBehaviour
         ws.Connect();
 
         starterAssetsInputs = GetComponent<StarterAssetsInputs>();
-                // Create an instance of QRCodeGenerator
+               
          qrCodeGenerator = GetComponent<QRCodeGenerator>();
   
         if (ws.ReadyState == WebSocketState.Open)
@@ -45,7 +53,7 @@ public class WebsocketClient : MonoBehaviour
             Debug.Log("WebSocket connection established!");
             ws.Send("{\"type\":\"unity\"}");
             if (qrCodeGenerator != null) {
-               qrCodeGenerator.EncodeQRCode("https://localhost:3000");
+               qrCodeGenerator.EncodeQRCode("http://localhost:3000/");
             } else {
                Debug.LogError("QR code generator is null!");
             }
@@ -68,9 +76,23 @@ public class WebsocketClient : MonoBehaviour
                  y = moveData.y;
                  direction = moveData.direction;
                  distance = moveData.distance;
-                Debug.Log("X: "+x+"y: "+y+"direction: "+direction+"distance: "+distance);
+          //   Debug.Log(JsonUtility.ToJson(moveData));
+
+             //   Debug.Log("X: "+ x+" y: "+y+" direction: "+direction+" distance: "+distance);
                
-            }
+            };
+
+                        if (moveData.type == "rotate")
+            {
+                // Get the movement values from the message
+                 xRotate = moveData.x;
+                 yRotate = moveData.y;
+                 distanceRotate = moveData.distance;
+             //    Debug.Log(JsonUtility.ToJson(moveData));
+
+             //   Debug.Log("X: "+ x+" y: "+y+" direction: "+direction+" distance: "+distance);
+               
+            };
         };
     }
 
@@ -88,23 +110,21 @@ public class WebsocketClient : MonoBehaviour
         // Set the movement values in the StarterAssetsInputs component
         starterAssetsInputs.move = new Vector2(currentSpeed.x, currentSpeed.y);
 
+        // Use xRotate and yRotate to set the target rotation for the transform
+        Vector3 targetEulerAngles = transform.rotation.eulerAngles;
+        Debug.Log(targetEulerAngles);
+        targetEulerAngles += new Vector3(-yRotate * distanceRotate * 5, xRotate * distanceRotate * 5, 0) * Time.deltaTime;
+       
+
+        Quaternion targetRotation = Quaternion.Euler(targetEulerAngles);
+
+        // Smooth the rotation over time
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, smoothTime);
+
         // Reset the movement values
         x = 0;
         y = 0;
-
-
-    }
-
-    private void Update()
-    {
-        // Use the direction to set the target rotation for the camera
-        Quaternion targetRotation = Quaternion.identity;
-
-        if(direction == "FORWARD"){
-            targetRotation = Quaternion.Euler(0, 0, 0);
-        }
-        else if(direction == "BACKWARD"){
-            targetRotation = Quaternion.Euler(0, 180, 0);
-        }
+        xRotate = 0;
+        yRotate = 0;
     }
 }
