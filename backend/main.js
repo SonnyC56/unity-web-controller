@@ -49,12 +49,12 @@ wss.on("connection", (ws) => {
       connectedClients.forEach((client) => {
         if (client !== unityClient) {
           const position = controlQueue.indexOf(client);
-          const totalClients = connectedClients.length;
+          const controlQueueLength = controlQueue.length;
           client.send(
             JSON.stringify({
               type: "queue",
               position: position,
-              totalClients: totalClients,
+              controlQueueLength: controlQueueLength,
             })
           );
         }
@@ -82,7 +82,7 @@ wss.on("connection", (ws) => {
 
     // If the disconnected client was in control, assign control to the next user in the queue
     if (ws === websocketInControl) {
-      controlQueue.shift();
+     // controlQueue.shift();
       if (controlQueue.length > 0) {
         websocketInControl = controlQueue[0];
         websocketInControl.send(JSON.stringify({ type: "control" }));
@@ -101,12 +101,12 @@ wss.on("connection", (ws) => {
     connectedClients.forEach((client) => {
       if (client !== unityClient) {
         const position = controlQueue.indexOf(client);
-        const totalClients = connectedClients.length;
+        const controlQueueLength = controlQueue.length;
         client.send(
           JSON.stringify({
             type: "queue",
             position: position,
-            totalClients: totalClients,
+            controlQueueLength: controlQueueLength,
           })
         );
       }

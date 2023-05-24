@@ -7,7 +7,7 @@ const WS_URL = 'ws://localhost:8090';
 function Controller() {
   const [hasControl, setHasControl] = useState(false);
   const [queuePosition, setQueuePosition] = useState(0);
-  const [totalClients, setTotalClients] = useState(0);
+  const [queueLength, setQueueLength] = useState(0);
 
   console.log('app rendered')
   const didMount = useRef(false);
@@ -26,12 +26,12 @@ function Controller() {
       const data = JSON.parse(event.data);
       console.log('recieving data ' , data)
       if (data.type === "control") {
-        // This client has been granted control of the camera
+        console.log('This client has been granted control of the camera');
         setHasControl(true);
         setQueuePosition(0);
       } else if (data.type === "queue") {
         // Update the total number of clients and the position of this client in the queue
-        setTotalClients(data.totalClients);
+        setQueueLength(data.controlQueueLength);
         setQueuePosition(data.position);
       } else if (data.type === "done") {
         // The current client is done controlling the camera
@@ -79,8 +79,8 @@ function Controller() {
                </div>
         ) : (
           <p>
-            {queuePosition > 0 ? (
-              `Waiting for control. Position in queue: ${queuePosition} / ${totalClients/2}`
+            {queuePosition  ? (
+              `Waiting for control. Position in queue: ${queuePosition+1} / ${queueLength}`
             ) : (
               "Waiting for control..."
             )}

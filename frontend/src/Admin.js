@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import useWebSocket from 'react-use-websocket';
 import { Joystick } from 'react-joystick-component';
  import './App.css'
@@ -6,10 +6,25 @@ const WS_URL = 'ws://localhost:8090';
 
 function Admin() {
 
-  const [controlQueue, setControlQueue] = useState({});
+  const [controlQueue, setControlQueue] = useState({type: "controlQueue", queue: {}});
+  const [controlQueueArray, setControlQueueArray] = useState([]);
 
 
-  console.log('app rendered')
+
+  useEffect(() => {
+
+    setControlQueueArray(Object.values(controlQueue.queue));
+
+
+  }, [controlQueue]);
+
+  useEffect(() => {
+
+  console.log('control queue array: ',controlQueueArray)
+
+
+  }, [controlQueueArray]);
+
   const didMount = useRef(false);
 
   const { sendJsonMessage } = useWebSocket(WS_URL, {
@@ -39,16 +54,17 @@ function Admin() {
     <div className="App">
       <header className="App-header">
         <h1>Admin Controls</h1>
-
-            <div className="MainContainer">
-
-
-               </div>
+  
+        <div className="MainContainer">
+        <ul>
+  {Array(controlQueueArray.length).fill().map((_, index) => (
+    <li key={index}>Slot {index + 1}</li>
+  ))}
+</ul>
+</div>
   
       </header>
     </div>
-
   );
-}
-
+          }
 export default Admin;
