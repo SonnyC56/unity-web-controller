@@ -4,7 +4,7 @@ import { Joystick } from 'react-joystick-component';
  import './App.css'
 const WS_URL = 'ws://localhost:8090';
 
-function App() {
+function Controller() {
   const [hasControl, setHasControl] = useState(false);
   const [queuePosition, setQueuePosition] = useState(0);
   const [totalClients, setTotalClients] = useState(0);
@@ -92,4 +92,4 @@ function App() {
   );
 }
 
-export default App;
+export default Controller;
