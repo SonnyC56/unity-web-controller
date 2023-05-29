@@ -1,18 +1,14 @@
-const WebSocketServer = require("ws");
-const wss = new WebSocketServer.Server({ port: 8090 });
+const targetClient = new WebSocketServer({ noServer: true });
 
-let connectedClients = [];
-let controlQueue = [];
-let unityClient = null;
-let adminClient = null;
-let websocketInControl = null;
-
-wss.on("connection", (ws) => {
+targetClient.on("connection", (ws) => {
   connectedClients.push(ws);
+
   console.log(
     "client connected to server. Connected Clients: ",
     connectedClients.length
   );
+
+  ws.on('error', console.error);
 
   ws.on("message", (data) => {
     data = JSON.parse(data);
