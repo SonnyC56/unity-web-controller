@@ -1,5 +1,5 @@
-const WebSocketServer = require("ws");
-const wss = new WebSocketServer.Server({ port: 8090 });
+import { Server } from "ws";
+const wss = new Server({ port: 8090 });
 
 let connectedClients = [];
 let controlQueue = [];

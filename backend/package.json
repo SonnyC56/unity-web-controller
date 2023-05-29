@@ -1,5 +1,11 @@
 {
+  "scripts": {
+    "lint": "eslint"
+  },
   "dependencies": {
     "ws": "^8.13.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.41.0"
   }
 }
