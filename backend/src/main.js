@@ -1,11 +1,3 @@
-// const WebSocketServer = require("ws");
+import { server } from './server.js';
 
-
-import { createServer } from 'http';
-import { targetClient } from 'target';
-import { parse } from 'url';
-import { userClient } from 'user';
-
-
-
-server.listen(8080);
+server.listen(8090);
