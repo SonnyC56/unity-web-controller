@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import useWebSocket from 'react-use-websocket';
 import { Joystick } from 'react-joystick-component';
 import './App.css'
-const WS_URL = 'ws://localhost:8090/user';
+const USER_WS_URL = 'ws://localhost:8090/user';
 
 function Controller() {
   const [hasControl, setHasControl] = useState(false);
@@ -12,7 +12,7 @@ function Controller() {
   console.log('app rendered')
   const didMount = useRef(false);
 
-  const { sendJsonMessage } = useWebSocket(WS_URL, {
+  const { sendJsonMessage } = useWebSocket(USER_WS_URL, {
     onOpen: () => {
       if (!didMount.current) {
       // Send a message to the server to indicate that this is a web client
