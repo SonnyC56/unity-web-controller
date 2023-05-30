@@ -1,5 +1,5 @@
-import { Server } from "ws";
-const wss = new Server({ port: 8090 });
+import { WebSocketServer } from "ws";
+const wss = new WebSocketServer({ port: 8090 });
 
 let connectedClients = [];
 let controlQueue = [];
@@ -82,7 +82,7 @@ wss.on("connection", (ws) => {
 
     // If the disconnected client was in control, assign control to the next user in the queue
     if (ws === websocketInControl) {
-     // controlQueue.shift();
+      // controlQueue.shift();
       if (controlQueue.length > 0) {
         websocketInControl = controlQueue[0];
         websocketInControl.send(JSON.stringify({ type: "control" }));
