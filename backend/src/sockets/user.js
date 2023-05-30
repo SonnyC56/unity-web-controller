@@ -2,17 +2,17 @@
 import { WebSocketServer } from 'ws';
 import state from '../state.js';
 
-export const userClient = new WebSocketServer({ noServer: true });
+export const userSocket = new WebSocketServer({ noServer: true });
 
-userClient.on("connection", (ws) => {
-  state.connectedClients.push(ws);
+userSocket.on("connection", (userClient) => {
+  state.connectedClients.push(userClient);
 
   console.log(
     "client connected to server. Connected Clients: ",
     state.connectedClients.length
   );
 
-  ws.on("message", (data) => {
+  userClient.on("message", (data) => {
     data = JSON.parse(data);
 
     if (data.type === "done") {
@@ -25,7 +25,7 @@ userClient.on("connection", (ws) => {
       }
     } else if (data.type === "join") {
       // Add the new client to the end of the control queue
-      state.controlQueue.push(ws);
+      state.controlQueue.push(userClient);
       console.log("adding to control que");
       state.websocketInControl = state.controlQueue[0];
       state.controlQueue[0].send(JSON.stringify({ type: "control" }));
@@ -46,12 +46,12 @@ userClient.on("connection", (ws) => {
     }
   });
 
-  ws.on("close", () => {
+  userClient.on("close", () => {
     console.log("client disconnected");
 
     // Remove the disconnected client from the connected clients list and control queue\
-    const connectedClientsIndex = state.connectedClients.indexOf(ws);
-    const controlQueueIndex = state.controlQueue.indexOf(ws);
+    const connectedClientsIndex = state.connectedClients.indexOf(userClient);
+    const controlQueueIndex = state.controlQueue.indexOf(userClient);
     if (connectedClientsIndex > -1) {
       // only splice array when item is found
       state.connectedClients.splice(connectedClientsIndex, 1); // 2nd parameter means remove one item only
@@ -62,7 +62,7 @@ userClient.on("connection", (ws) => {
     }
 
     // If the disconnected client was in control, assign control to the next user in the queue
-    if (ws === state.websocketInControl) {
+    if (userClient === state.websocketInControl) {
       // controlQueue.shift();
       if (state.controlQueue.length > 0) {
         state.websocketInControl = state.controlQueue[0];

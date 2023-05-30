@@ -2,21 +2,21 @@
 import { WebSocketServer } from 'ws';
 import state from '../state.js';
 
-export const unityClient = new WebSocketServer({ noServer: true });
+export const unitySocket = new WebSocketServer({ noServer: true });
 
-unityClient.on("connection", (ws) => {
-  state.connectedClients.push(ws);
+unitySocket.on("connection", (unityClient) => {
+  state.connectedClients.push(unityClient);
 
   console.log(
     "client connected to server. Connected Clients: ",
     state.connectedClients.length
   );
 
-  ws.on("message", (data) => {
-    console.log("UNITY CONNECTED :", unityClient);
+  unityClient.on("message", (data) => {
+    console.log("UNITY CONNECTED :", unitySocket);
   });
 
-  ws.on("close", () => {
+  unityClient.on("close", () => {
     // If this was the Unity client, set it to null
     state.unityClient = null;
     console.log("UNITY DISCONNECTED");

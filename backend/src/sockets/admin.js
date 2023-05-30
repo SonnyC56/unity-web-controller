@@ -2,20 +2,20 @@
 import { WebSocketServer } from 'ws';
 import state from '../state.js';
 
-export const adminClient = new WebSocketServer({ noServer: true });
+export const adminSocket = new WebSocketServer({ noServer: true });
 
-adminClient.on("connection", (ws) => {
-  state.connectedClients.push(ws);
+adminSocket.on("connection", (adminClient) => {
+  state.connectedClients.push(adminClient);
 
   console.log(
     "client connected to server. Connected Clients: ",
     state.connectedClients.length
   );
 
-  ws.on('error', console.error);
+  adminClient.on('error', console.error);
 
-  ws.on("message", (data) => {
-    ws.send(
+  adminClient.on("message", (data) => {
+    adminClient.send(
       JSON.stringify({
         type: "controlQueue",
         queue: state.controlQueue,
@@ -24,7 +24,7 @@ adminClient.on("connection", (ws) => {
     console.log("ADMIN CONNECTED :");
   });
 
-  ws.on("close", () => {
+  adminClient.on("close", () => {
     console.log("client disconnected");
 
     // Notify all clients of their new position in the control queue

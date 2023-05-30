@@ -1,8 +1,8 @@
 import { createServer } from 'http';
 import { parse } from 'url';
-import { adminClient } from './clients/admin.js';
-import { unityClient } from './clients/unity.js';
-import { userClient } from './clients/user.js';
+import { adminSocket } from './sockets/admin.js';
+import { unitySocket } from './sockets/unity.js';
+import { userSocket } from './sockets/user.js';
 
 export const server = createServer();
 
@@ -10,16 +10,16 @@ server.on('upgrade', function upgrade(request, socket, head) {
   const { pathname } = parse(request.url);
 
   if (pathname === '/user') {
-    userClient.handleUpgrade(request, socket, head, function done(ws) {
-      userClient.emit('connection', ws, request);
+    userSocket.handleUpgrade(request, socket, head, function done(ws) {
+      userSocket.emit('connection', ws, request);
     });
   } else if (pathname === '/unity') {
-    unityClient.handleUpgrade(request, socket, head, function done(ws) {
-      unityClient.emit('connection', ws, request);
+    unitySocket.handleUpgrade(request, socket, head, function done(ws) {
+      unitySocket.emit('connection', ws, request);
     });
   } else if (pathname === '/admin') {
-    adminClient.handleUpgrade(request, socket, head, function done(ws) {
-      adminClient.emit('connection', ws, request);
+    adminSocket.handleUpgrade(request, socket, head, function done(ws) {
+      adminSocket.emit('connection', ws, request);
     });
   } else {
     socket.destroy();
