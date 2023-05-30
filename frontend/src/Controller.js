@@ -1,14 +1,16 @@
 import { useState, useRef } from 'react';
 import useWebSocket from 'react-use-websocket';
 import { Joystick } from 'react-joystick-component';
+import { useParams } from 'react-router-dom';
 import './App.css'
 const USER_WS_URL = 'ws://localhost:8090/user';
 
 function Controller() {
   const [hasControl, setHasControl] = useState(false);
+  const [isDone, setIsDone] = useState(false);
   const [queuePosition, setQueuePosition] = useState(0);
   const [queueLength, setQueueLength] = useState(0);
-
+  const { name } = useParams();
   console.log('app rendered')
   const didMount = useRef(false);
 
@@ -16,7 +18,7 @@ function Controller() {
     onOpen: () => {
       if (!didMount.current) {
       // Send a message to the server to indicate that this is a web client
-      sendJsonMessage({ type: "join" });
+      sendJsonMessage({ type: "join", name: name });
       console.log('join message sent')
          didMount.current = true;
       }
@@ -36,6 +38,7 @@ function Controller() {
       } else if (data.type === "done") {
         // The current client is done controlling the camera
         setHasControl(false);
+        setIsDone(true);
         setQueuePosition(0);
       }
     },
@@ -56,10 +59,11 @@ function Controller() {
     if (hasControl) {
       setHasControl(false);
       sendJsonMessage({ type: "done" });
+      setIsDone(true);
     }
   };
 
-  return (
+if(!isDone){  return (
     <div className="App">
       <header className="App-header">
         <h1>Unity Web Controller</h1>
@@ -90,6 +94,19 @@ function Controller() {
     </div>
 
   );
+} else {
+  return(
+    <div className="App">
+ <header className="App-header">
+        <h1>Done Controlling, refresh to join again</h1>
+       
+      </header>
+
+    </div>
+
+  )
+}
+
 }
 
 export default Controller;
