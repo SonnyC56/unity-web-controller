@@ -43,6 +43,9 @@ userSocket.on("connection", (userClient) => {
           );
         }
       });
+    } else if (state.unityClient !== null) {
+      state.unityClient.send(JSON.stringify(data));
+      console.log("sending data to unity: ", data);
     }
   });
 

@@ -6,7 +6,7 @@ export const unitySocket = new WebSocketServer({ noServer: true });
 
 unitySocket.on("connection", (unityClient) => {
   state.connectedClients.push(unityClient);
-
+  state.unityClient = unityClient
   console.log(
     "client connected to server. Connected Clients: ",
     state.connectedClients.length
