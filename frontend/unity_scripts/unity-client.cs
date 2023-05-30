@@ -41,7 +41,7 @@ public class WebsocketClient : MonoBehaviour
 
     private void Start()
     {
-        ws = new WebSocket("ws://localhost:8090");
+        ws = new WebSocket("ws://localhost:8090/unity");
         ws.Connect();
 
         starterAssetsInputs = GetComponent<StarterAssetsInputs>();
