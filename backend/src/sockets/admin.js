@@ -1,18 +1,20 @@
 import { WebSocketServer } from "ws";
 import state from "../state.js";
 import { v4 as uuidv4 } from "uuid";
+import { removeOneInPlace, broadcastQueuePositions } from "../utils.js";
+
 export const adminSocket = new WebSocketServer({ noServer: true });
-const uuid = uuidv4();
+
 adminSocket.on("connection", (adminClient) => {
-  state.connectedClients.push({
+  state.adminClients.push({
     client: adminClient,
     name: "admin",
-    uuid: uuid,
+    uuid: uuidv4(),
   });
 
   console.log(
-    "client connected to server. Connected Clients: ",
-    state.connectedClients.length
+    "admin connected to server. Connected Admins: ",
+    state.adminClients.length
   );
 
   adminClient.on("error", console.error);
@@ -22,42 +24,31 @@ adminSocket.on("connection", (adminClient) => {
     if (data.type === "kickMember") {
       const uuidToKick = data.member.uuid;
       console.log("Kicking member from control queue: ", uuidToKick);
-      const memberIndex = state.controlQueue.findIndex(
-        (member) => member.uuid === uuidToKick
+      const memberToKick = state.controlQueue.find(
+        (i) => i.uuid === data.member.uuid
       );
-      if (memberIndex !== -1) {
-        state.controlQueue.splice(memberIndex, 1);
+      const isKicked = removeOneInPlace(
+        state.controlQueue,
+        (member) => member === memberToKick
+      );
+
+      if (isKicked) {
         console.log(
-          `Member ${data.member.name} has been kicked from the control queue`
+          `Member ${memberToKick.name} has been kicked from the control queue`
         );
 
-        if (state.websocketInControl) {
-          state.websocketInControl.client.send(
-            JSON.stringify({ type: "done" })
-          );
+        if (state.controlQueue.length) {
+          memberToKick.client.send(JSON.stringify({ type: "done" }));
         }
 
-        state.websocketInControl = state.controlQueue[0];
-        if (state.websocketInControl) {
-          state.websocketInControl.client.send(
+        if (state.controlQueue.length) {
+          state.controlQueue[0].client.send(
             JSON.stringify({ type: "control" })
           );
         }
 
         // Notify all clients of the updated control queue
-        state.connectedClients.forEach((client) => {
-          if (client.client !== state.unityClient) {
-            const position = state.controlQueue.indexOf(client);
-            const controlQueueLength = state.controlQueue.length;
-            client.client.send(
-              JSON.stringify({
-                type: "queue",
-                position: position,
-                controlQueueLength: controlQueueLength,
-              })
-            );
-          }
-        });
+        broadcastQueuePositions();
       } else {
         console.log(`Member ${data.member.uuid} not found in control queue`);
       }
@@ -73,35 +64,7 @@ adminSocket.on("connection", (adminClient) => {
   });
 
   adminClient.on("close", () => {
+    removeOneInPlace(state.adminClients, (c) => c === adminClient);
     console.log("client disconnected");
-
-    // Remove the disconnected client from the connected clients list and control queue\
-    const connectedClientsIndex = state.connectedClients.findIndex(
-      (controller) => controller.client === adminClient
-    );
-
-    console.log("connectedClientsIndex: ", connectedClientsIndex);
-
-    if (connectedClientsIndex > -1) {
-      // only splice array when item is found
-      state.connectedClients.splice(connectedClientsIndex, 1); // 2nd parameter means remove one item only
-    }
-
-    // Notify all clients of their new position in the control queue
-    state.connectedClients.forEach((client) => {
-      if (client.client !== state.unityClient) {
-        const position = state.controlQueue.findIndex(
-          (controller) => controller.client === client.client
-        );
-        const controlQueueLength = state.controlQueue.length;
-        client.client.send(
-          JSON.stringify({
-            type: "queue",
-            position: position,
-            controlQueueLength: controlQueueLength,
-          })
-        );
-      }
-    });
   });
 });

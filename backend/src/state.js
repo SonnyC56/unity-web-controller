@@ -1,6 +1,5 @@
 export default {
-  connectedClients: [],
-
+  adminClients: [],
   controlQueue: [],
   websocketInControl: null,
   unityClient: null,
