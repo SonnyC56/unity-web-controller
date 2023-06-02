@@ -1,6 +1,5 @@
-
-import { WebSocketServer } from 'ws';
-import state from '../state.js';
+import { WebSocketServer } from "ws";
+import state from "../state.js";
 
 export const adminSocket = new WebSocketServer({ noServer: true });
 
@@ -12,7 +11,7 @@ adminSocket.on("connection", (adminClient) => {
     state.connectedClients.length
   );
 
-  adminClient.on('error', console.error);
+  adminClient.on("error", console.error);
 
   adminClient.on("message", (data) => {
     adminClient.send(

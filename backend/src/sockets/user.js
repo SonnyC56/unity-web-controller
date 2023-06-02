@@ -1,6 +1,5 @@
-
-import { WebSocketServer } from 'ws';
-import state from '../state.js';
+import { WebSocketServer } from "ws";
+import state from "../state.js";
 
 export const userSocket = new WebSocketServer({ noServer: true });
 
