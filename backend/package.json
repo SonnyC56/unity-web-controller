@@ -6,6 +6,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "uuid": "^9.0.0",
     "ws": "^8.13.0"
   },
   "devDependencies": {
