@@ -1,6 +1,7 @@
-import { WebSocketServer } from "ws";
-import state from "../state.js";
-import { v4 as uuidv4 } from "uuid";
+import { WebSocketServer } from 'ws';
+import state from '../state.js';
+import { serializeClientArray } from '../utils.js'
+import { v4 as uuidv4 } from 'uuid';
 export const adminSocket = new WebSocketServer({ noServer: true });
 const uuid = uuidv4();
 adminSocket.on("connection", (adminClient) => {
@@ -65,7 +66,7 @@ adminSocket.on("connection", (adminClient) => {
       adminClient.send(
         JSON.stringify({
           type: "controlQueue",
-          queue: state.controlQueue,
+          queue: serializeClientArray(state.controlQueue),
         })
       );
       console.log("ADMIN CONNECTED :");
