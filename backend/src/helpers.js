@@ -1,9 +1,17 @@
 import state from "./state.js";
 
-export const removeOneInPlace = (array, expr) =>
-  // returns true if removed, false if not found
-  !array.every(
-    (item, index) => !array.splice(index, expr(item, index) ? 1 : 0).length
+/**
+ * Removes the first element in an array that returns value of true from the given expression
+ *
+ * @param {array} arr an array
+ * @param {function(element, index)} expr an expression that returns true if given element should be removed
+ * @returns {boolean} true if a matching element was found and removed, false if no matching element was found
+ */
+export const removeOneInPlace = (arr, expr) =>
+  // array
+  // returns true if first matching element is removed, returns false if no matching element iss found
+  !arr.every(
+    (item, index) => !arr.splice(index, expr(item, index) ? 1 : 0).length
   );
 
 export const broadcastQueuePositions = () => {
