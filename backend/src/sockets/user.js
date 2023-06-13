@@ -1,7 +1,7 @@
 import { WebSocketServer } from "ws";
 import state from "../state.js";
 import { v4 as uuidv4 } from "uuid";
-import { removeOneInPlace, broadcastQueuePositions } from "../utils.js";
+import { removeOneInPlace, broadcastQueuePositions } from "../helpers.js";
 
 export const userSocket = new WebSocketServer({ noServer: true });
 

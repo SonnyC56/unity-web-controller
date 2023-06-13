@@ -5,7 +5,7 @@ import {
   removeOneInPlace,
   broadcastQueuePositions,
   serializeClientArray,
-} from "../utils.js";
+} from "../helpers.js";
 
 export const adminSocket = new WebSocketServer({ noServer: true });
 
