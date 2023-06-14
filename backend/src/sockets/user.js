@@ -7,7 +7,6 @@ export const userSocket = new WebSocketServer({ noServer: true });
 
 userSocket.on("connection", (userClient) => {
   const uuid = uuidv4();
-  state.controlQueue.push({ client: userClient, name: "user", uuid: uuid });
 
   console.log(
     "user client connected to server. Connected User Clients: ",
@@ -44,7 +43,7 @@ userSocket.on("connection", (userClient) => {
     console.log("client disconnected");
 
     // Remove the disconnected client from the connected clients list and control queue\
-    removeOneInPlace(state.controlQueue, (c) => c === userClient);
+    removeOneInPlace(state.controlQueue, (c) => c.uuid === uuid);
 
     // Assign control to the first user in the queue
     if (state.controlQueue.length) {
