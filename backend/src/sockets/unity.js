@@ -8,7 +8,7 @@ unitySocket.on("connection", (unityClient) => {
   state.unityClient = unityClient;
   console.log(
     "client connected to server. Connected Clients: ",
-    state.connectedClients.length
+    state.connectedClients?.length
   );
 
   unityClient.on("message", () => {
