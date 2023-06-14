@@ -8,7 +8,7 @@ import state from "./state.js";
  * @returns {boolean} true if a matching element was found and removed, false if no matching element was found
  */
 export const removeOneInPlace = (arr, expr) =>
-  arr.every(
+  !arr.every(
     (item, index) => !arr.splice(index, expr(item, index) ? 1 : 0).length
   );
 
