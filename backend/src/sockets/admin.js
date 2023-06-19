@@ -56,11 +56,26 @@ adminSocket.on("connection", (adminClient) => {
       } else {
         console.log(`Member ${data.member.uuid} not found in control queue`);
       }
+    } else if (data.type === "timer") {
+      console.log("Setting turn timer to: ", data.time);
+      state.turnTimerInMilluSeconds = data.time;
+      adminClient.send(
+        JSON.stringify({
+          type: "timer",
+          time: state.turnTimerInMilluSeconds,
+        })
+      );
     } else if (data.type === "admin") {
       adminClient.send(
         JSON.stringify({
           type: "controlQueue",
           queue: serializeClientArray(state.controlQueue),
+        })
+      );
+      adminClient.send(
+        JSON.stringify({
+          type: "timer",
+          time: state.turnTimerInMilluSeconds,
         })
       );
       console.log("ADMIN CONNECTED :");
