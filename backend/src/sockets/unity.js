@@ -5,16 +5,10 @@ import state from "../state.js";
 export const unitySocket = new WebSocketServer({ noServer: true });
 
 unitySocket.on("connection", (unityClient) => {
-  const uuid = uuidv4();
-  state.connectedClients.push({
-    client: unityClient,
-    name: "unity",
-    uuid: uuid,
-  });
   state.unityClient = unityClient;
   console.log(
     "client connected to server. Connected Clients: ",
-    state.connectedClients.length
+    state.connectedClients?.length
   );
 
   unityClient.on("message", () => {

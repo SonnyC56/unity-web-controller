@@ -6,7 +6,7 @@ export const profileSocket = new WebSocketServer({ noServer: true });
 profileSocket.on("connection", (profileClient) => {
   console.log(
     "client connected to server. Connected Clients: ",
-    state.connectedClients.length
+    state.controlQueue.length
   );
 
   profileClient.on("error", console.error);
