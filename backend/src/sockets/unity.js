@@ -26,4 +26,6 @@ unitySocket.on("connection", (unityClient) => {
     state.unityClient = null;
     console.log("UNITY DISCONNECTED");
   });
+
+  unityClient.on("error", console.error);
 });

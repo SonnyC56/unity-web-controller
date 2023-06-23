@@ -121,4 +121,6 @@ userSocket.on("connection", (userClient) => {
       }
     });
   });
+
+  userClient.on("error", console.error);
 });

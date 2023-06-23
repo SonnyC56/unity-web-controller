@@ -27,4 +27,6 @@ profileSocket.on("connection", (profileClient) => {
   profileClient.on("close", () => {
     console.log("client disconnected");
   });
+
+  profileClient.on("error", console.error);
 });
