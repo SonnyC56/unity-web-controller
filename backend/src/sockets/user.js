@@ -21,7 +21,12 @@ userSocket.on("connection", (userClient) => {
       state.controlQueue.shift();
       // Allow the next client in line to take control
       if (state.controlQueue.length) {
-        state.controlQueue[0].client.send(JSON.stringify({ type: "control" }));
+        state.controlQueue[0].client.send(
+          JSON.stringify({
+            type: "control",
+            turnTime: state.turnTimerInMilluSeconds,
+          })
+        );
       }
     } else if (data.type === "join") {
       // Add the new client to the end of the control queue
@@ -30,7 +35,12 @@ userSocket.on("connection", (userClient) => {
         name: data.name,
         uuid: uuid,
       });
-      state.controlQueue[0].client.send(JSON.stringify({ type: "control" }));
+      state.controlQueue[0].client.send(
+        JSON.stringify({
+          type: "control",
+          turnTime: state.turnTimerInMilluSeconds,
+        })
+      );
       // Notify all clients of their new position in the control queue
       broadcastQueuePositions();
     } else if (state.unityClient !== null) {
