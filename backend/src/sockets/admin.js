@@ -86,4 +86,6 @@ adminSocket.on("connection", (adminClient) => {
     removeOneInPlace(state.adminClients, (c) => c === adminClient);
     console.log("client disconnected");
   });
+
+  adminClient.on("error", console.error);
 });

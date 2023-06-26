@@ -63,4 +63,6 @@ userSocket.on("connection", (userClient) => {
     // Notify all clients of their new position in the control queue
     broadcastQueuePositions();
   });
+
+  userClient.on("error", console.error);
 });
