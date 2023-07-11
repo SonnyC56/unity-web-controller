@@ -9,7 +9,7 @@ using TMPro;
 public class QRCodeGenerator : MonoBehaviour
 {
     [SerializeField]
-    private RawImage _rawImageReceiver;
+    public RawImage _rawImageReceiver;
 /*     [SerializeField]
     private TMP_InputField _textInputField; */
 
@@ -38,6 +38,18 @@ public class QRCodeGenerator : MonoBehaviour
     public void EncodeQRCode(string textForEncoding)
     {
         EncodeTextToQRCode(textForEncoding);
+    }
+
+   public void hide()
+    {
+    Debug.Log("Disabling RawImage component");
+    _rawImageReceiver.gameObject.SetActive(false);
+    Debug.Log("RawImage component disabled");
+    }
+   public void show()
+    {
+          Debug.Log("_rawImageReceiver.enabled = true; ");
+          _rawImageReceiver.enabled = true;
     }
 
     private void EncodeTextToQRCode(string textForEncoding)

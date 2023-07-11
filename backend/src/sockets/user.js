@@ -43,6 +43,9 @@ userSocket.on("connection", (userClient) => {
       );
       // Notify all clients of their new position in the control queue
       broadcastQueuePositions();
+      if(state.unityClient !== null){
+        state.unityClient.send(JSON.stringify({type: "newUser"}))
+       }
     } else if (state.unityClient !== null) {
       state.unityClient.send(JSON.stringify(data));
       console.log("sending data to unity: ", data);
